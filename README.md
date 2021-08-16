@@ -7,7 +7,7 @@ Brush alphas are useful in sculpting for adding fine details.
 They're also super useful for mold making: because they project onto the 
 surface of your sculpt, they can't create undercuts.
 
-https://github.com/lostidols/BrushAlphaSetUp/blob/main/BASetup.png
+<img src="https://github.com/lostidols/BrushAlphaSetUp/blob/main/BASetup.png">
 
 What It Does
 
