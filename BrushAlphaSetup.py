@@ -79,6 +79,7 @@ class BrushAlpha(bpy.types.Operator):
 #create Mix node
         mix_node = tree.nodes.new('CompositorNodeMixRGB')   
         mix_node.location = 900,0
+        bpy.data.scenes["Scene"].node_tree.nodes["Mix"].blend_type = 'MULTIPLY'
 # create output node
         comp_node = tree.nodes.new('CompositorNodeComposite')   
         comp_node.location = 1200,0
