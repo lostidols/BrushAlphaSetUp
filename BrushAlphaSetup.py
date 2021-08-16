@@ -11,7 +11,7 @@
 bl_info = {
     "name": "Brush Alpha Set Up",
     "author": "Jay Barnett",
-    "version": (1, 0),
+    "version": (1, 1),
     "blender": (2, 80, 0),
 }
 
@@ -64,17 +64,36 @@ class BrushAlpha(bpy.types.Operator):
 # create Invert node
         invert_node = tree.nodes.new('CompositorNodeInvert')   
         invert_node.location = 600,0
+#create Mask node
+        mask_node = tree.nodes.new('CompositorNodeEllipseMask')   
+        mask_node.location = 300,-300
+        bpy.data.scenes["Scene"].node_tree.nodes["Ellipse Mask"].width = 0.6
+        bpy.data.scenes["Scene"].node_tree.nodes["Ellipse Mask"].height = 0.6
+#create Blur node
+        blur_node = tree.nodes.new('CompositorNodeBlur')   
+        blur_node.location = 650,-300
+        bpy.data.scenes["Scene"].node_tree.nodes["Blur"].filter_type = 'CATROM'
+        bpy.data.scenes["Scene"].node_tree.nodes["Blur"].use_relative = True
+        bpy.data.scenes["Scene"].node_tree.nodes["Blur"].factor_x = 35
+        bpy.data.scenes["Scene"].node_tree.nodes["Blur"].factor_y = 35
+#create Mix node
+        mix_node = tree.nodes.new('CompositorNodeMixRGB')   
+        mix_node.location = 900,0
 # create output node
         comp_node = tree.nodes.new('CompositorNodeComposite')   
-        comp_node.location = 900,0
+        comp_node.location = 1200,0
 # create viewer node
         viewer_node = tree.nodes.new('CompositorNodeViewer')   
-        viewer_node.location = 900,-300
+        viewer_node.location = 1200,-300
 # link nodes
         links = tree.links
         link = links.new(layers_node.outputs[3], gamma_node.inputs[0])
         link = links.new(gamma_node.outputs[0], invert_node.inputs[0])
-        link = links.new(invert_node.outputs[0], comp_node.inputs[0])
+        link = links.new(invert_node.outputs[0], mix_node.inputs[1])
+        link = links.new(mask_node.outputs[0], blur_node.inputs[0])
+        link = links.new(blur_node.outputs[0], mix_node.inputs[2])
+        link = links.new(mix_node.outputs[0], comp_node.inputs[0])
+        link = links.new(mix_node.outputs[0], viewer_node.inputs[0])
 # turn on Xray
         for window in bpy.context.window_manager.windows:
             screen = window.screen
